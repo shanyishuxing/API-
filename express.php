@@ -4,12 +4,20 @@
 </div>
 
 <?php
-//快递查询接口，需要对/yuantong/ 快递公司做替换， 替换快递单号	YT4049056560901   
-	$data=file_get_contents("https://biz.trace.ickd.cn/yuantong/YT4049056560901");   
-	//echo "var data='",$data,"'";
+	if(!isset($_GET['number'])||$_GET['number']==null){
+		echo "<h1>请在网页后面输入快递单号</h1>";
+		header('Refresh:2;url=express.php?number=');
+		exit;
+	}	
+	//快递查询接口，需要对/yuantong/ 快递公司做替换， 替换快递单号	YT4049056560901   
+	$data=file_get_contents("https://biz.trace.ickd.cn/auto/".trim($_GET['number']));
+	//反转倒序,解析成数组，并反转，再输出json
+	$data=json_decode($data,true);	
+	$data['data']=array_reverse($data['data']);
+	$data=json_encode($data);	
 ?>
 <script type="text/javascript"src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-<script language="javascript">   
+<script language="javascript">	  
     $(function(){
       var dataObj=<?=$data?>;//转换为json对象
        var html='<tr>';
@@ -29,13 +37,15 @@
           $.each(dataObj.data,function(idx,item){                           
               html+='<tr>';                           
               html+='<td width="163" style="border:1px solid #dddddd;font-size: 12px;line-height:22px;padding:3px 5px;">';                           
-              html+=item.time;// 每条数据的时间                           
+              html+=item.time;// 每条数据的时间 
+	  
               html+='</td>';                           
               html+='<td width="354" style="border:1px solid #dddddd;font-size: 12px;line-height:22px;padding:3px 5px;">';                           
               html+=item.context;// 每条数据的状态                         
               html+='</td>';                         
            	html+='</tr>';                 
-           });                   
+           });		
+		   
           html+='</table>';           
     }else{
 		//查询不到                   
