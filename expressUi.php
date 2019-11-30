@@ -105,9 +105,12 @@
 </div>
 
 <?php
-	if(!isset($_GET['number'])||$_GET['number']==null){
-		echo "<h1>请在网页后面输入快递单号</h1>";
+	if(!isset($_GET['number'])){
+		echo "<h1>请在网页后面输入快递单号</h1>";	
 		header('Refresh:2;url=express.php?number=');
+		exit;
+	}if($_GET['number']==null){
+		echo "<h1>请在网页后面输入快递单号</h1>";		
 		exit;
 	}	
 	//快递查询接口，需要对/yuantong/ 快递公司做替换， 替换快递单号	YT4049056560901   
